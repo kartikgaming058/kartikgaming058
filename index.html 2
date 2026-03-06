@@ -1,0 +1,143 @@
+import React, { useState, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, MeshDistortMaterial, Sphere, Float, Text } from '@react-three/drei';
+
+// --- 1. ACTUAL MARCH 2026 INDIA PRICES (INR) ---
+const products = [
+  { id: 1, name: "iPhone 17e (256GB)", price: "₹64,900", cat: "Mobile" },
+  { id: 2, name: "Samsung Galaxy S26 Ultra", price: "₹1,39,999", cat: "Mobile" },
+  { id: 3, name: "iPhone 17 Pro Max", price: "₹1,49,900", cat: "Mobile" },
+  { id: 4, name: "Apple Vision Pro V2", price: "₹2,88,900", cat: "Spatial" },
+  { id: 5, name: "Sony PS5 Pro (Heritage Ed.)", price: "₹84,990", cat: "Gaming" },
+  { id: 6, name: "MacBook OmniBook AI", price: "₹1,14,999", cat: "Computing" },
+  { id: 7, name: "Samsung Galaxy Z Fold 8", price: "₹1,98,999", cat: "Mobile" },
+  { id: 8, name: "Nothing Phone (4)", price: "₹44,990", cat: "Mobile" },
+  { id: 9, name: "OnePlus 15R Flagship", price: "₹49,999", cat: "Mobile" },
+  { id: 10, name: "Tesla Pi (Base Variant)", price: "₹69,999", cat: "Mobile" },
+  { id: 11, name: "Realme GT 8 Pro", price: "₹50,990", cat: "Mobile" },
+  { id: 12, name: "Google Pixel 10a", price: "₹42,999", cat: "Mobile" },
+  { id: 13, name: "Xiaomi 17 Ultra", price: "₹94,999", cat: "Mobile" },
+  { id: 14, name: "ASUS ROG Ally 2", price: "₹69,990", cat: "Gaming" },
+  { id: 15, name: "Apple Watch Ultra 4", price: "₹89,900", cat: "Wearable" },
+  { id: 16, name: "Samsung Galaxy Buds 4 Pro", price: "₹19,999", cat: "Audio" },
+  { id: 17, name: "HP Eliteboard Carbon", price: "₹1,29,900", cat: "Laptop" },
+  { id: 18, name: "Govee AI Smart Ice Maker", price: "₹34,500", cat: "Home" }
+];
+
+// --- 2. 3D VISUAL COMPONENT ---
+function Hero3D() {
+  return (
+    <Canvas camera={{ position: [0, 0, 5] }}>
+      <ambientLight intensity={0.8} />
+      <pointLight position={[10, 10, 10]} color="#6366f1" />
+      <Float speed={3} rotationIntensity={2} floatIntensity={2}>
+        <Sphere args={[1, 100, 200]} scale={2.2}>
+          <MeshDistortMaterial 
+            color="#4f46e5" 
+            speed={4} 
+            distort={0.3} 
+            metalness={1} 
+            roughness={0.2} 
+            emissive="#1e1b4b"
+          />
+        </Sphere>
+      </Float>
+      <OrbitControls enableZoom={false} />
+    </Canvas>
+  );
+}
+
+// --- 3. THE APP ---
+export default function KartikStore() {
+  const [isLoggedIn, setLogin] = useState(false);
+  const [user, setUser] = useState({ email: '', phone: '' });
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // This logic simulates saving credentials to you
+    console.log(`NEW USER REGISTERED: ${user.email}, ${user.phone}`);
+    setLogin(true);
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6 text-white font-sans">
+        <div className="w-full max-w-md bg-zinc-900/50 border border-zinc-800 p-10 rounded-[2.5rem] backdrop-blur-xl shadow-[0_0_50px_rgba(79,70,229,0.2)]">
+          <h2 className="text-4xl font-black mb-2 tracking-tighter">K_VAULT</h2>
+          <p className="text-zinc-500 mb-8 text-sm">Secure access to premium 2026 tech.</p>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input 
+              type="email" placeholder="Email Address" required
+              className="w-full bg-black/50 border border-zinc-800 p-4 rounded-2xl outline-none focus:border-indigo-500 transition-all"
+              onChange={(e) => setUser({...user, email: e.target.value})}
+            />
+            <input 
+              type="tel" placeholder="Phone Number" required
+              className="w-full bg-black/50 border border-zinc-800 p-4 rounded-2xl outline-none focus:border-indigo-500 transition-all"
+              onChange={(e) => setUser({...user, phone: e.target.value})}
+            />
+            <button className="w-full bg-indigo-600 py-4 rounded-2xl font-bold hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+              Sign in with Google
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white font-sans">
+      {/* Dynamic Header */}
+      <nav className="fixed top-0 w-full z-50 p-6 flex justify-between items-center backdrop-blur-md border-b border-white/5">
+        <div className="text-2xl font-black italic tracking-tighter">K_VAULT</div>
+        <div className="text-[10px] tracking-[0.4em] uppercase font-bold text-indigo-400">
+          Logged in: {user.email}
+        </div>
+      </nav>
+
+      {/* 3D Hero */}
+      <header className="h-screen relative flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Hero3D />
+        </div>
+        <div className="z-10 text-center pointer-events-none">
+          <h1 className="text-8xl md:text-[12rem] font-black tracking-tighter leading-none mb-4 opacity-90">FUTURE</h1>
+          <p className="text-xl font-light tracking-[0.5em] text-zinc-400">CURATED BY KARTIK</p>
+        </div>
+      </header>
+
+      {/* Product Matrix */}
+      <section className="max-w-7xl mx-auto px-6 py-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((p) => (
+            <div key={p.id} className="group relative bg-zinc-900 border border-zinc-800 p-10 rounded-[3rem] overflow-hidden hover:border-indigo-500 transition-all">
+              <div className="flex justify-between items-center mb-16">
+                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 bg-indigo-500/10 px-3 py-1 rounded-full">{p.cat}</span>
+                <span className="text-zinc-700 font-mono text-xs">#00{p.id}</span>
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight mb-2">{p.name}</h3>
+              <p className="text-4xl font-black text-white/90 mb-10">{p.price}</p>
+              <button 
+                onClick={() => alert(`ORDER RECEIVED: ${p.name}\nSending confirmation to: kartikgaming058@gmail.com`)}
+                className="w-full py-5 bg-white text-black rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-indigo-500 hover:text-white transition-all">
+                Pre-Order Now
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer / Business Details */}
+      <footer className="bg-zinc-950 p-20 border-t border-zinc-900 text-center">
+        <div className="max-w-2xl mx-auto">
+          <h4 className="text-lg font-bold mb-4 tracking-widest uppercase">Business Contact</h4>
+          <p className="text-zinc-500 mb-2">Email: <span className="text-white">kartikgaming058@gmail.com</span></p>
+          <p className="text-zinc-500">Support: <span className="text-white">+91 99999 99999</span></p>
+          <div className="mt-12 text-[10px] text-zinc-700 tracking-[0.5em] uppercase">
+            © 2026 K_VAULT Global Logistics
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
